@@ -11,14 +11,33 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+      {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossorigin: true,
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap',
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
+      },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['~/assets/css/helpers.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/transliterate.js'],
+  server: {
+    host: '0.0.0.0',
+  },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -34,7 +53,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     // TODO: uncomment for prod
-    '@nuxtjs/pwa',
+    // '@nuxtjs/pwa',
   ],
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -43,7 +62,7 @@ export default {
       lang: 'en',
     },
   },
-
+  // vite: { ssr: true },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 }
