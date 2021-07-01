@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <transition name="fade" mode="out-in">
-      <div v-if="groups.length === 0" class="main__empty">
+      <div v-if="groups.length === 0" class="empty">
         У вас не має жодної групи.<br />
         Натисніть &plus; що б створити нову групу рослин
       </div>
@@ -28,16 +28,11 @@
 </template>
 
 <script>
-import Dexie from 'dexie'
+import useDB from '~/hooks/useDB'
 
 export default {
   async asyncData({ store }) {
-    const db = new Dexie('garden')
-    db.version(2).stores({
-      groups: '&id, &name, &slug',
-      plants: '&id, &name, &slug',
-      date: '&id',
-    })
+    const db = useDB()
 
     const groups = await db.table('groups').toArray()
 
@@ -50,16 +45,6 @@ export default {
 
 <style lang="scss">
 .main {
-  &__empty {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 100%;
-    max-width: 17rem;
-    font-size: 1.25rem;
-  }
   &__list {
     display: flex;
     flex-direction: column;

@@ -8,6 +8,9 @@
       <h1 v-else-if="$route.name === 'group-name'" class="nav__header">
         Рослини
       </h1>
+      <h1 v-else-if="$route.name === 'plant-name'" class="nav__header">
+        {{ decodeURI(plantName) }}
+      </h1>
     </transition>
     <transition name="fade" mode="out-in">
       <button
@@ -20,9 +23,9 @@
               params: {
                 type:
                   $route.name === 'index'
-                    ? 'group'
+                    ? 'groups'
                     : $route.name === 'group-name'
-                    ? 'plant'
+                    ? 'plants'
                     : 'date',
               },
             })
@@ -43,10 +46,24 @@
 
 <script>
 import { mapActions } from 'vuex'
+import useDB from '~/hooks/useDB'
 
 export default {
+  data: () => ({
+    plantName: '',
+  }),
+  watch: {
+    '$route.name'(name) {
+      if (name === 'plant-name') this.getPlantName(this.$route.params.name)
+    },
+  },
   methods: {
     ...mapActions({ save: 'saveForm' }),
+    async getPlantName(plantSlug) {
+      const db = useDB()
+      const plant = await db.table('plants').get({ slug: plantSlug })
+      this.plantName = plant.name
+    },
   },
 }
 </script>
@@ -65,7 +82,7 @@ export default {
     0 0 10px 0 rgba($color: #000000, $alpha: 0.1);
 
   &__add-button {
-    $button-size: 40px;
+    $button-size: 33px;
     width: $button-size;
     height: $button-size;
     border-radius: 50%;

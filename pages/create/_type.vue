@@ -5,12 +5,14 @@
     @reset.prevent="resetForm"
   >
     <div class="form__item">
-      <label>{{ type === 'group' ? 'Веддіть назву Групи:' : '' }}</label>
+      <label>{{
+        type === 'groups' ? 'Веддіть назву Групи:' : 'Веддіть назву Рослини:'
+      }}</label>
       <input
         ref="input1"
         v-model="name"
         type="text"
-        :placeholder="type === 'group' ? 'Яблуні...' : ''"
+        :placeholder="type === 'groups' ? 'Яблуні...' : 'Юпіер'"
       />
     </div>
     <div class="form__action">

@@ -23,6 +23,17 @@
   color: rgba(0, 0, 0, 1);
 }
 
+.empty {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+  max-width: 19rem;
+  font-size: 1.25rem;
+}
+
 .button {
   font-size: 1rem;
   text-transform: uppercase;
@@ -37,7 +48,7 @@
 
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 300ms;
+  transition: opacity 200ms;
 }
 .page-enter,
 .page-leave-to {
