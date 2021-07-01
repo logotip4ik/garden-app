@@ -13,13 +13,13 @@
           @click="
             () =>
               $router.push({
-                name: 'group',
-                params: { name: $transliterate(group.name).toLowerCase() },
+                name: 'group-name',
+                params: { name: group.slug },
               })
           "
         >
           <h2 class="main__list__item__header">
-            {{ group.name }}
+            {{ decodeURI(group.name) }}
           </h2>
         </li>
       </ul>
@@ -33,9 +33,9 @@ import Dexie from 'dexie'
 export default {
   async asyncData({ store }) {
     const db = new Dexie('garden')
-    db.version(1).stores({
-      groups: '&id, &name',
-      plants: '&id, &name',
+    db.version(2).stores({
+      groups: '&id, &name, &slug',
+      plants: '&id, &name, &slug',
       date: '&id',
     })
 

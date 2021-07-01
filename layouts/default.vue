@@ -5,7 +5,13 @@
   </div>
 </template>
 
-<script></script>
+<script>
+export default {
+  mounted() {
+    this.$store.dispatch('initDB')
+  },
+}
+</script>
 
 <style>
 /* THIS IS PRIMARY COLOR(probaly need to use it) #00b8bf */

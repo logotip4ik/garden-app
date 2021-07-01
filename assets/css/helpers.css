@@ -1,3 +1,12 @@
+:root {
+  --primary-color: #870d4d;
+  --primary-color-light: #bb4679;
+  --primary-color-dark: #550025;
+  --secondary-color: #ef9a9a;
+  --secondary-color-light: #ffcccb;
+  --secondary-color-dark: #ba6b6c;
+}
+
 .material-icons.md-18 {
   font-size: 18px;
 }
@@ -10,13 +19,27 @@
 .material-icons.md-48 {
   font-size: 48px;
 }
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.4s ease;
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 1);
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.button {
+  font-size: 1rem;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+  font-weight: 600;
+  background-color: transparent;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25), 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  transition: border-color 200ms ease-out;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 300ms;
+}
+.page-enter,
+.page-leave-to {
   opacity: 0;
 }

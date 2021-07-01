@@ -1,17 +1,31 @@
 <template>
   <nav class="nav">
-    <transition name="nav-header-slide">
-      <h1 v-if="$route.name === 'index'" class="nav__header">Garden</h1>
+    <transition name="fade">
+      <h1 v-if="$route.name === 'index'" class="nav__header">Город</h1>
       <h1 v-else-if="$route.name === 'create-type'" class="nav__header">
         Створити
       </h1>
+      <h1 v-else-if="$route.name === 'group-name'" class="nav__header">
+        Рослини
+      </h1>
     </transition>
-    <transition>
+    <transition name="fade" mode="out-in">
       <button
-        v-if="$route.name === 'index'"
+        v-if="$route.name === 'index' || $route.name === 'group-name'"
         class="nav__add-button"
         @click="
-          () => $router.push({ name: 'create-type', params: { type: 'group' } })
+          () =>
+            $router.push({
+              name: 'create-type',
+              params: {
+                type:
+                  $route.name === 'index'
+                    ? 'group'
+                    : $route.name === 'group-name'
+                    ? 'plant'
+                    : 'date',
+              },
+            })
         "
       >
         <span class="material-icons md-24">add</span>
@@ -41,12 +55,14 @@ export default {
 .nav {
   width: 100%;
   padding: 1rem 1.25rem;
-  background-color: rgba($color: #000000, $alpha: 0.8);
+  background-color: var(--primary-color);
   backdrop-filter: blur(1.5px);
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 0 2px 0 rgba($color: #000000, $alpha: 0.25),
+    0 0 10px 0 rgba($color: #000000, $alpha: 0.1);
 
   &__add-button {
     $button-size: 40px;

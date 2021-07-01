@@ -29,12 +29,15 @@ export default {
       },
     ],
   },
-
+  loading: {
+    color: 'whitesmoke',
+    height: '2px',
+  },
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['~/assets/css/helpers.css'],
+  css: ['~/assets/css/helpers.css', '~/assets/css/snackbar.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/transliterate.js'],
+  plugins: ['~/plugins/transliterate.js', '~/plugins/snackbar.js'],
   server: {
     host: '0.0.0.0',
   },

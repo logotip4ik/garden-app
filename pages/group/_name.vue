@@ -1,7 +1,7 @@
 <template>
   <ul class="plants">
     {{
-      groups
+      plants
     }}
   </ul>
 </template>
@@ -12,20 +12,17 @@ import Dexie from 'dexie'
 export default {
   async asyncData({ store, params }) {
     const db = new Dexie('garden')
-    db.version(1).stores({
-      groups: '&id, &name',
-      plants: '&id, &name',
+    db.version(2).stores({
+      groups: '&id, &name, &slug',
+      plants: '&id, &name, &slug',
       date: '&id',
     })
 
-    const group = await db
-      .table('groups')
-      .where({ name: params.name })
-      .toArray()
+    const group = await db.table('groups').get({ slug: params.name })
 
     console.log(group)
 
-    return { plants: group }
+    return { plants: group.plants }
   },
 }
 </script>

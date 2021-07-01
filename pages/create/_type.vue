@@ -1,16 +1,21 @@
 <template>
-  <form class="form" @submit.prevent="() => save(type)" @reset.prevent="reset">
+  <form
+    class="form"
+    @submit.prevent="() => saveForm(type)"
+    @reset.prevent="resetForm"
+  >
     <div class="form__item">
       <label>{{ type === 'group' ? 'Веддіть назву Групи:' : '' }}</label>
       <input
+        ref="input1"
         v-model="name"
         type="text"
-        :placeholder="type === 'group' ? 'Яблуні' : ''"
+        :placeholder="type === 'group' ? 'Яблуні...' : ''"
       />
     </div>
     <div class="form__action">
-      <button class="save" type="submit">save</button>
-      <button class="reset" type="reset">reset</button>
+      <button class="button save" type="submit">save</button>
+      <button class="button reset" type="reset">reset</button>
     </div>
   </form>
 </template>
@@ -32,8 +37,11 @@ export default {
       },
     },
   },
+  mounted() {
+    this.$refs.input1.focus()
+  },
   methods: {
-    ...mapActions({ save: 'saveForm', reset: 'resetForm' }),
+    ...mapActions(['saveForm', 'resetForm']),
   },
 }
 </script>
@@ -42,12 +50,12 @@ export default {
 .form {
   width: 100%;
   max-width: 400px;
-  padding: 0.5rem;
+  padding: 1.5rem 1rem 0;
   &__item {
     label {
       display: block;
       font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
     }
     input {
       width: 100%;
@@ -65,6 +73,26 @@ export default {
         border-bottom-color: rgba($color: #000000, $alpha: 1);
         border-bottom-width: 2px;
       }
+    }
+  }
+  &__action {
+    padding: 1rem 0 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+
+    .save {
+      color: black;
+      background-color: var(--secondary-color);
+    }
+    .reset {
+      color: black;
+      background-color: var(--secondary-color-light);
+    }
+    *:hover {
+      border-color: rgba($color: #000000, $alpha: 0.1);
     }
   }
 }
