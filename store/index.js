@@ -7,6 +7,17 @@ export const state = () => ({
   groups: [],
   currGroup: {},
   name: '',
+  authenticated: false,
+  columnNames: [
+    'Мишече вушко',
+    'Формування суцвіть',
+    'Рожевий бутон',
+    'Цвітіння',
+    'Кінець цвітіння',
+    'Ліщина',
+    'Волоський горіх',
+    'Формування і дозрівання плодів',
+  ],
 })
 
 export const mutations = {
@@ -49,7 +60,15 @@ export const actions = {
       name: encodeURI(state.name.trim()),
       slug: transliterate(state.name.trim()).toLowerCase(),
       group: state.currGroup.slug,
+      dates: {},
     }
+    state.columnNames.forEach(
+      (name) =>
+        (plant.dates[transliterate(name).toLowerCase()] = {
+          time: null,
+          notes: '',
+        })
+    )
     state.db.table('plants').put(plant)
   },
   async saveForm({ state, dispatch }, type) {

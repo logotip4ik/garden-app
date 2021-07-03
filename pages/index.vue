@@ -28,15 +28,20 @@
 </template>
 
 <script>
-import useDB from '~/hooks/useDB'
+import { fire } from '~/hooks/useFirebase'
 
 export default {
-  async asyncData({ store }) {
-    const db = useDB()
+  async asyncData() {
+    const db = fire.firestore()
 
-    const groups = await db.table('groups').toArray()
+    const groups = []
 
-    store.commit('setGroups', groups)
+    const uid = fire.auth().currentUser.uid
+    const querySnapshot = await db
+      .collection('groups')
+      .where('belongs', '==', uid)
+      .get()
+    querySnapshot.forEach((doc) => groups.push({ id: doc.id, ...doc.data() }))
 
     return { groups }
   },
@@ -50,7 +55,7 @@ export default {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    max-width: 450px;
+    // max-width: 450px;
     margin: 0 auto;
     list-style-type: none;
 

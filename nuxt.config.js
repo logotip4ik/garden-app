@@ -37,9 +37,16 @@ export default {
   css: ['~/assets/css/helpers.css', '~/assets/css/snackbar.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/transliterate.js', '~/plugins/snackbar.js'],
+  plugins: [
+    '~/plugins/transliterate.js',
+    '~/plugins/snackbar.js',
+    '~/plugins/vue-phone-number.client.js',
+  ],
   server: {
     host: '0.0.0.0',
+  },
+  router: {
+    middleware: ['auth'],
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -57,6 +64,22 @@ export default {
     // https://go.nuxtjs.dev/pwa
     // TODO: uncomment for prod
     // '@nuxtjs/pwa',
+    // [
+    //   '@nuxtjs/firebase',
+    //   {
+    //     config: {
+    //       apiKey: 'AIzaSyB54xV2o0-3HfWpKDlXdWV-Sk-EQYRsfcE',
+    //       authDomain: 'garden-app-b069d.firebaseapp.com',
+    //       projectId: 'garden-app-b069d',
+    //       storageBucket: 'garden-app-b069d.appspot.com',
+    //       messagingSenderId: '317442427051',
+    //       appId: '1:317442427051:web:8e143467826844d0e8cfee',
+    //     },
+    //     services: {
+    //       auth: true, // Just as example. Can be any other service.
+    //     },
+    //   },
+    // ],
   ],
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -68,4 +91,23 @@ export default {
   // vite: { ssr: true },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+  // firebase: {
+  //   config: {
+  //     apiKey: 'AIzaSyB54xV2o0-3HfWpKDlXdWV-Sk-EQYRsfcE',
+  //     authDomain: 'garden-app-b069d.firebaseapp.com',
+  //     projectId: 'garden-app-b069d',
+  //     storageBucket: 'garden-app-b069d.appspot.com',
+  //     messagingSenderId: '317442427051',
+  //     appId: '1:317442427051:web:8e143467826844d0e8cfee',
+  //   },
+  //   services: {
+  //     auth: true,
+  //     // auth: {
+  //     //   persistence: 'local', // default
+  //     //   initialize: {
+  //     //     onAuthStateChangedAction: 'onAuthStateChangedAction',
+  //     //   },
+  //     // },
+  //   },
+  // },
 }

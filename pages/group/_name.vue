@@ -25,19 +25,29 @@
 </template>
 
 <script>
-import useDB from '~/hooks/useDB'
+import { fire } from '~/hooks/useFirebase'
 
 export default {
   async asyncData({ store, params }) {
-    const db = useDB()
+    const db = fire.firestore()
 
-    const group = await db.table('groups').get({ slug: params.name })
-    const plants = await db
-      .table('plants')
-      .where({ group: group.slug })
-      .toArray()
+    const uid = fire.auth().currentUser.uid
+    const group = {}
+    const plants = []
 
-    store.commit('update', ['currGroup', group])
+    const querySnapshot = await db
+      .collection('groups')
+      .where('belongs', '==', uid)
+      .where('slug', '==', params.name)
+      .get()
+    querySnapshot.forEach((doc) =>
+      Object.assign(group, { id: doc.id, ...doc.data() })
+    )
+
+    group.plants.forEach(async (doc) => {
+      const plant = await doc.get()
+      plants.push({ id: plant.id, ...plant.data() })
+    })
 
     return { group, plants }
   },
@@ -55,8 +65,8 @@ export default {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    max-width: 450px;
-    margin: 0 auto;
+    // max-width: 450px;
+    // margin: 0 auto;
     list-style-type: none;
 
     &__item {

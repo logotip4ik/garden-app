@@ -12,7 +12,7 @@
         ref="input1"
         v-model="name"
         type="text"
-        :placeholder="type === 'groups' ? 'Яблуні...' : 'Юпіер'"
+        :placeholder="type === 'groups' ? 'Яблуні...' : 'Юпітер'"
       />
     </div>
     <div class="form__action">
@@ -52,6 +52,7 @@ export default {
 .form {
   width: 100%;
   max-width: 400px;
+  margin: 0 auto;
   padding: 1.5rem 1rem 0;
   &__item {
     label {

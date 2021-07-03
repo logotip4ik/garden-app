@@ -1,7 +1,7 @@
 <template>
   <nav class="nav">
     <transition name="fade">
-      <h1 v-if="$route.name === 'index'" class="nav__header">Город</h1>
+      <h1 v-if="$route.name === 'index'" class="nav__header">Садок</h1>
       <h1 v-else-if="$route.name === 'create-type'" class="nav__header">
         Створити
       </h1>
