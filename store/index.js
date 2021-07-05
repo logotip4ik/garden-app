@@ -1,14 +1,27 @@
-import { v4 } from 'uuid'
 import { transliterate } from 'transliteration'
-import useDB from '~/hooks/useDB'
+import { fire } from '~/hooks/useFirebase'
 
 export const state = () => ({
   db: {},
   groups: [],
+  years: {},
+  currYear: {},
+  currPlant: {},
   currGroup: {},
   name: '',
+  plantType: 'derevo',
   authenticated: false,
-  columnNames: [
+  derevoColumnNames: [
+    'Мишече вушко',
+    'Формування суцвіть',
+    'Рожевий бутон',
+    'Цвітіння',
+    'Кінець цвітіння',
+    'Ліщина',
+    'Волоський горіх',
+    'Формування і дозрівання плодів',
+  ],
+  vinogradColumnNames: [
     'Мишече вушко',
     'Формування суцвіть',
     'Рожевий бутон',
@@ -21,14 +34,47 @@ export const state = () => ({
 })
 
 export const mutations = {
-  setDb: (state, db) => (state.db = db),
   setGroups: (state, groups) => (state.groups = groups),
   update: (state, [property, val]) => (state[property] = val),
 }
 
 export const actions = {
-  initDB({ state }) {
-    state.db = useDB()
+  showDialog(_, text) {
+    return new Promise((resolve, reject) => {
+      const dialogContainer = document.createElement('div')
+      dialogContainer.classList.add('dialog-container')
+
+      const dialog = document.createElement('div')
+      dialogContainer.appendChild(dialog)
+      dialog.classList.add('dialog')
+
+      const dialogHeader = document.createElement('h2')
+      dialog.appendChild(dialogHeader)
+      dialogHeader.textContent = text
+
+      const res = (remove, ev) => {
+        resolve({ remove, ev })
+        dialogContainer.classList.remove('append')
+        dialog.classList.remove('append')
+        setTimeout(() => dialogContainer.remove(), 500)
+      }
+
+      const dialogDelete = document.createElement('button')
+      dialog.appendChild(dialogDelete)
+      dialogDelete.textContent = 'Видалити'
+      dialogDelete.onclick = (ev) => res(true, ev)
+
+      const dialogCancel = document.createElement('button')
+      dialog.appendChild(dialogCancel)
+      dialogCancel.textContent = 'Скасувати'
+      dialogCancel.onclick = (ev) => res(false, ev)
+
+      document.body.appendChild(dialogContainer)
+      setTimeout(() => {
+        dialog.classList.add('append')
+        dialogContainer.classList.add('append')
+      }, 10)
+    })
   },
   showSnack(_, [text, timeout = 5000]) {
     const snackContainer = document.createElement('div')
@@ -45,31 +91,39 @@ export const actions = {
     setTimeout(() => snackContainer.remove(), timeout)
     setTimeout(() => snack.classList.add('append'), 10)
   },
-  createGroup({ state }) {
+  async createGroup({ state }) {
     const group = {
-      id: v4(),
+      belongs: fire.auth().currentUser.uid,
       name: encodeURI(state.name.trim()),
       slug: transliterate(state.name.trim()).toLowerCase(),
+      plants: [],
     }
-    state.groups.unshift(group)
-    state.db.table('groups').put(group)
+    await fire.firestore().collection('groups').add(group)
   },
-  createPlant({ state }) {
+  async createPlant({ state }) {
     const plant = {
-      id: v4(),
       name: encodeURI(state.name.trim()),
       slug: transliterate(state.name.trim()).toLowerCase(),
-      group: state.currGroup.slug,
       dates: {},
+      belongs: fire.auth().currentUser.uid,
+      type: state.plantType,
     }
-    state.columnNames.forEach(
+    state[`${state.plantType}ColumnNames`].forEach(
       (name) =>
         (plant.dates[transliterate(name).toLowerCase()] = {
           time: null,
           notes: '',
         })
     )
-    state.db.table('plants').put(plant)
+    const createdPlant = await fire.firestore().collection('plants').add(plant)
+    await fire
+      .firestore()
+      .collection('groups')
+      .doc(state.currGroup.id)
+      .set(
+        { plants: [...state.currGroup.plants, createdPlant] },
+        { merge: true }
+      )
   },
   async saveForm({ state, dispatch }, type) {
     if (!state.name) return

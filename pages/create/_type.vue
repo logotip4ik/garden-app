@@ -1,9 +1,5 @@
 <template>
-  <form
-    class="form"
-    @submit.prevent="() => saveForm(type)"
-    @reset.prevent="resetForm"
-  >
+  <form class="form" @submit.prevent="save" @reset.prevent="resetForm">
     <div class="form__item">
       <label>{{
         type === 'groups' ? 'Веддіть назву Групи:' : 'Веддіть назву Рослини:'
@@ -12,12 +8,20 @@
         ref="input1"
         v-model="name"
         type="text"
+        required
         :placeholder="type === 'groups' ? 'Яблуні...' : 'Юпітер'"
       />
     </div>
+    <div v-if="type === 'plants'" class="form__item">
+      <label>Веддіть тип Рослини:</label>
+      <select ref="inputPlantType" v-model="plantType" required>
+        <option value="derevo" selected>Дерево, Кущ...</option>
+        <option value="vinograd">Виноград</option>
+      </select>
+    </div>
     <div class="form__action">
-      <button class="button save" type="submit">save</button>
-      <button class="button reset" type="reset">reset</button>
+      <button class="button save" type="submit">Зберегти</button>
+      <button class="button reset" type="reset">Скасувати</button>
     </div>
   </form>
 </template>
@@ -30,6 +34,14 @@ export default {
     return { type: params.type }
   },
   computed: {
+    plantType: {
+      get() {
+        return this.$store.state.plantType
+      },
+      set(val) {
+        return this.$store.commit('update', ['plantType', val])
+      },
+    },
     name: {
       get() {
         return this.$store.state.name
@@ -44,6 +56,10 @@ export default {
   },
   methods: {
     ...mapActions(['saveForm', 'resetForm']),
+    save() {
+      this.saveForm(this.type)
+      this.$nuxt.$loading.start()
+    },
   },
 }
 </script>
@@ -51,18 +67,21 @@ export default {
 <style lang="scss" scoped>
 .form {
   width: 100%;
-  max-width: 400px;
+  max-width: 700px;
   margin: 0 auto;
   padding: 1.5rem 1rem 0;
   &__item {
+    margin-bottom: 2rem;
     label {
       display: block;
       font-size: 1.2rem;
       margin-bottom: 1rem;
     }
-    input {
+    input,
+    select {
       width: 100%;
       border: none;
+      border-radius: 0;
       border-bottom: 1px solid rgba($color: #000000, $alpha: 0.2);
       font-size: 1.2rem;
       padding: 0.25rem 0.1rem;

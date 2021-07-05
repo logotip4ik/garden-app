@@ -10,17 +10,35 @@
               :value="plant.dates[$transliterate(name).toLowerCase()].time"
               class="no-input"
               @input="
-                savePlant($transliterate(name).toLowerCase(), 'time', $event),
-                  resizeTextArea($event)
+                savePlant($transliterate(name).toLowerCase(), 'time', $event)
               "
           /></span>
         </h3>
-        <details>
-          <summary>Обробка</summary>
-          <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quasi,
-            unde?
-          </p>
+        <details class="date-card__notes">
+          <summary
+            @click.self="
+              resizeTextArea({ target: $refs[`textarea${idx}`][0] }, 10)
+            "
+          >
+            Обробка
+          </summary>
+          <div>
+            <textarea
+              :ref="`textarea${idx}`"
+              :value="plant.dates[$transliterate(name).toLowerCase()].notes"
+              @input="resizeTextArea"
+            ></textarea>
+            <button
+              :disabled="!hasChanges"
+              @click="
+                savePlant($transliterate(name).toLowerCase(), 'notes', {
+                  target: $refs[`textarea${idx}`][0],
+                })
+              "
+            >
+              save
+            </button>
+          </div>
         </details>
       </li>
     </ul>
@@ -28,40 +46,45 @@
 </template>
 
 <script>
-import useDB from '~/hooks/useDB'
+import { fire } from '~/hooks/useFirebase'
 
 export default {
-  async asyncData({ params, store }) {
-    const db = useDB()
-
-    const plant = await db.table('plants').get({ slug: params.name })
-    const dates = await db.table('dates').where({ plant: plant.slug }).toArray()
-
-    return { plant, dates, columnNames: store.state.columnNames }
-  },
-  mounted() {
-    // for (let i = 0; i < this.columnNames.length; i++) {
-    //   // console.log(this.$refs[`textarea${i}`][0])
-    //   this.resizeTextArea({ target: this.$refs[`textarea${i}`][0] })
-    // }
+  data: () => ({
+    hasChanges: false,
+  }),
+  computed: {
+    plant() {
+      return this.$store.state.currPlant
+    },
+    columnNames() {
+      return this.$store.state[`${this.plant.type}ColumnNames`]
+    },
   },
   methods: {
-    resizeTextArea({ target }) {
-      target.style.height = 'auto'
-      target.style.height = target.scrollHeight + 'px'
+    resizeTextArea({ target }, timeout = 0) {
+      setTimeout(() => {
+        target.style.height = 'auto'
+        target.style.height = `${target.scrollHeight + 2}px`
+        this.hasChanges = true
+      }, timeout)
     },
-    savePlant(name, type, ev) {
-      const db = useDB()
-
-      const newPlant = {
-        ...this.plant,
+    async savePlant(name, type, { target }) {
+      const plantDates = {
         dates: {
-          ...this.plant.dates,
-          [name]: { ...this.plant.dates[name], [type]: ev.target.value },
+          [name]: { ...this.plant.dates[name], [type]: target.value },
         },
       }
+      const plantPath = `plants/${this.plant.id}`
+      const newPlant = {
+        ...this.plant,
+        dates: { ...this.plant.dates, ...plantDates.dates },
+      }
 
-      db.table('plants').put(newPlant)
+      await fire.firestore().doc(plantPath).set(plantDates, { merge: true })
+      this.hasChanges = false
+
+      this.$store.commit('update', ['currPlant', newPlant])
+      // if (type === 'notes') this.$nuxt.refresh()
     },
   },
 }
@@ -70,22 +93,20 @@ export default {
 <style lang="scss" scoped>
 .plant {
   padding-top: 1rem;
-  &__header {
-    padding: 1rem;
-    border-bottom: 1px solid rgba($color: #000000, $alpha: 0.5);
-  }
+
   &__dates {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
     gap: 1rem;
-    max-width: 1050px;
+    max-width: 98vw;
     margin: 0 auto;
     width: 100%;
     padding: 0.75rem;
     list-style-type: none;
   }
+
   .date-card {
     width: 100%;
     box-shadow: 0 0 2px 0 rgba($color: #000000, $alpha: 0.25),
@@ -98,6 +119,58 @@ export default {
       gap: 0.5rem;
       justify-content: space-between;
       align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    &__notes {
+      cursor: pointer;
+
+      div {
+        text-align: right;
+
+        textarea {
+          resize: vertical;
+          margin-bottom: 1rem;
+          width: 100%;
+          border: none;
+          border-radius: 0;
+          border-bottom: 1px solid rgba($color: #000000, $alpha: 0.5);
+          padding: 0.25rem 0.1rem;
+          outline: none;
+          font: inherit;
+          transition: border-bottom-color 200ms ease,
+            border-bottom-width 200ms ease;
+
+          &:hover {
+            border-bottom-color: rgba($color: #000000, $alpha: 0.9);
+          }
+          &:focus {
+            border-bottom-color: rgba($color: #000000, $alpha: 1);
+            border-bottom-width: 2px;
+          }
+        }
+        button {
+          cursor: not-allowed;
+          padding: 0.5rem 1rem;
+          font: inherit;
+          font-weight: 600;
+          font-size: 0.9rem;
+          text-transform: uppercase;
+          border: none;
+          border-radius: 0.25rem;
+          background-color: white;
+          box-shadow: 0 0 2px 0 rgba($color: #000000, $alpha: 0.25),
+            0 0 7px 0 rgba($color: #000000, $alpha: 0.1);
+          transition: background-color 200ms ease-out;
+
+          &:not(:disabled) {
+            cursor: pointer;
+
+            :hover {
+              background-color: var(--secondary-color);
+            }
+          }
+        }
+      }
     }
   }
   .no-input {

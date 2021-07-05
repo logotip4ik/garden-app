@@ -5,64 +5,54 @@
       <h1 v-else-if="$route.name === 'create-type'" class="nav__header">
         Створити
       </h1>
+      <h1 v-else-if="$route.name === 'year-number'" class="nav__header">
+        {{ currYear }}
+      </h1>
       <h1 v-else-if="$route.name === 'group-name'" class="nav__header">
-        Рослини
+        {{ decodeURI(currGroup.name) }}
       </h1>
       <h1 v-else-if="$route.name === 'plant-name'" class="nav__header">
         {{ decodeURI(plantName) }}
       </h1>
     </transition>
-    <transition name="fade" mode="out-in">
-      <button
-        v-if="$route.name === 'index' || $route.name === 'group-name'"
-        class="nav__add-button"
-        @click="
-          () =>
-            $router.push({
-              name: 'create-type',
-              params: {
-                type:
-                  $route.name === 'index'
-                    ? 'groups'
-                    : $route.name === 'group-name'
-                    ? 'plants'
-                    : 'date',
-              },
-            })
-        "
-      >
-        <span class="material-icons md-24">add</span>
-      </button>
-      <button
-        v-else-if="$route.name === 'create-type'"
-        class="nav__add-button"
-        @click="() => save($route.params.type)"
-      >
-        <span class="material-icons md-24">save</span>
-      </button>
-    </transition>
+    <div>
+      <transition name="fade" mode="out-in">
+        <button
+          v-if="$route.name === 'create-type'"
+          class="nav__add-button"
+          @click="() => save($route.params.type)"
+        >
+          <span class="material-icons md-24">save</span>
+        </button>
+        <button v-else class="nav__add-button" @click="logout">
+          <span class="material-icons md-24">logout</span>
+        </button>
+      </transition>
+    </div>
   </nav>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import useDB from '~/hooks/useDB'
+import { fire } from '~/hooks/useFirebase'
 
 export default {
-  data: () => ({
-    plantName: '',
-  }),
-  watch: {
-    '$route.name'(name) {
-      if (name === 'plant-name') this.getPlantName(this.$route.params.name)
+  computed: {
+    currGroup() {
+      return this.$store.state.currGroup
+    },
+    currYear() {
+      return this.$store.state.currYear
+    },
+    plantName() {
+      return decodeURI(this.$store.state.currPlant.name)
     },
   },
   methods: {
-    ...mapActions({ save: 'saveForm' }),
-    async getPlantName(plantSlug) {
-      const db = useDB()
-      const plant = await db.table('plants').get({ slug: plantSlug })
-      this.plantName = plant.name
+    async logout() {
+      await fire.auth().signOut()
+      this.$store.commit('update', ['authenticated', false])
+      this.$store.commit('update', ['currUser', {}])
+      this.$router.push({ name: 'login' })
     },
   },
 }
@@ -80,6 +70,13 @@ export default {
   align-items: center;
   box-shadow: 0 0 2px 0 rgba($color: #000000, $alpha: 0.25),
     0 0 10px 0 rgba($color: #000000, $alpha: 0.1);
+
+  div {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
+  }
 
   &__add-button {
     $button-size: 33px;

@@ -1,29 +1,10 @@
 <template>
   <div class="main">
-    <transition name="fade" mode="out-in">
-      <div v-if="groups.length === 0" class="empty">
-        У вас не має жодної групи.<br />
-        Натисніть &plus; що б створити нову групу рослин
-      </div>
-      <ul v-else class="main__list">
-        <li
-          v-for="group in groups"
-          :key="group.id"
-          class="main__list__item"
-          @click="
-            () =>
-              $router.push({
-                name: 'group-name',
-                params: { name: group.slug },
-              })
-          "
-        >
-          <h2 class="main__list__item__header">
-            {{ decodeURI(group.name) }}
-          </h2>
-        </li>
-      </ul>
-    </transition>
+    <ul class="main__list">
+      <li v-for="yearKey in yearsKeys" :key="yearKey" @click="routeTo(yearKey)">
+        <h2>{{ yearKey }}</h2>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -31,19 +12,41 @@
 import { fire } from '~/hooks/useFirebase'
 
 export default {
-  async asyncData() {
+  async asyncData({ store }) {
     const db = fire.firestore()
 
-    const groups = []
+    const years = {}
+    let doc
 
+    const currYear = new Date().getFullYear()
     const uid = fire.auth().currentUser.uid
-    const querySnapshot = await db
-      .collection('groups')
-      .where('belongs', '==', uid)
-      .get()
-    querySnapshot.forEach((doc) => groups.push({ id: doc.id, ...doc.data() }))
+    const docPath = `years/${uid}`
+    doc = await db.doc(docPath).get()
 
-    return { groups }
+    if (!doc.exists) {
+      await db.doc(docPath).set({ [currYear]: [] })
+      doc = await db.doc(docPath).get()
+    }
+
+    Object.assign(years, doc.data())
+    if (!years[currYear]) {
+      await db.doc(docPath).set({ [currYear]: [] }, { merge: true })
+      doc = await db.doc(docPath).get()
+      Object.assign(years, doc.data())
+    }
+
+    store.commit('update', ['years', years])
+
+    return { yearsKeys: Object.keys(years).sort(Number) }
+  },
+  methods: {
+    routeTo(yearKey) {
+      this.$store.commit('update', ['currYear', yearKey])
+      this.$router.push({
+        name: 'year-number',
+        params: { number: yearKey },
+      })
+    },
   },
 }
 </script>
@@ -59,7 +62,7 @@ export default {
     margin: 0 auto;
     list-style-type: none;
 
-    &__item {
+    li {
       border-radius: 0;
       width: 100%;
       padding: 1rem 1.5rem;
@@ -73,12 +76,6 @@ export default {
 
       &:not(:last-child) {
         border-bottom: 1px solid rgba($color: #000000, $alpha: 0.25);
-      }
-
-      &__header {
-        color: black;
-        font-size: 1.5rem;
-        text-decoration: none;
       }
     }
   }

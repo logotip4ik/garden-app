@@ -1,21 +1,13 @@
 <template>
   <div class="group">
-    <h2 class="group__header">{{ decodeURI(group.name) }}:</h2>
     <ul v-if="plants.length !== 0" class="group__plants">
-      <li
+      <Item
         v-for="plant in plants"
         :key="plant.id"
-        class="group__plants__item"
-        @click="
-          () =>
-            $router.push({
-              name: 'plant-name',
-              params: { name: plant.slug },
-            })
-        "
-      >
-        <h2 class="group__plants__item__header">{{ decodeURI(plant.name) }}</h2>
-      </li>
+        :item="plant"
+        :group="false"
+        @click="routeTo(plant)"
+      ></Item>
     </ul>
     <div v-else class="empty">
       У вас не має жодної рослини.<br />
@@ -25,31 +17,27 @@
 </template>
 
 <script>
-import { fire } from '~/hooks/useFirebase'
-
 export default {
-  async asyncData({ store, params }) {
-    const db = fire.firestore()
+  async asyncData({ store }) {
+    const groupSnapshot = store.state.currGroup
 
-    const uid = fire.auth().currentUser.uid
-    const group = {}
     const plants = []
 
-    const querySnapshot = await db
-      .collection('groups')
-      .where('belongs', '==', uid)
-      .where('slug', '==', params.name)
-      .get()
-    querySnapshot.forEach((doc) =>
-      Object.assign(group, { id: doc.id, ...doc.data() })
-    )
+    for (let i = 0; i < groupSnapshot.plants.length; i++) {
+      const plant = groupSnapshot.plants[i]
+      plants.push({ id: plant.id, ...(await plant.get()).data() })
+    }
 
-    group.plants.forEach(async (doc) => {
-      const plant = await doc.get()
-      plants.push({ id: plant.id, ...plant.data() })
-    })
-
-    return { group, plants }
+    return { plants }
+  },
+  methods: {
+    routeTo(plant) {
+      this.$store.commit('update', ['currPlant', plant])
+      this.$router.push({
+        name: 'plant-name',
+        params: { name: plant.slug },
+      })
+    },
   },
 }
 </script>
@@ -68,30 +56,6 @@ export default {
     // max-width: 450px;
     // margin: 0 auto;
     list-style-type: none;
-
-    &__item {
-      border-radius: 0;
-      width: 100%;
-      padding: 1rem 1.5rem;
-      padding-left: 2.5rem;
-      cursor: pointer;
-      background-color: transparent;
-      transition: background-color 200ms ease-out;
-
-      &:hover {
-        background-color: rgba($color: #000000, $alpha: 0.1);
-      }
-
-      &:not(:last-child) {
-        border-bottom: 1px solid rgba($color: #000000, $alpha: 0.25);
-      }
-
-      &__header {
-        color: black;
-        font-size: 1.5rem;
-        text-decoration: none;
-      }
-    }
   }
 }
 </style>
