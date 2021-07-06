@@ -1,6 +1,8 @@
 <template>
   <li class="item" @click.self="$emit('click', $event)">
-    <h2 class="item__header">{{ decodeURI(item.name) }}</h2>
+    <h2 class="item__header" @click.self="$emit('click', $event)">
+      {{ decodeURI(item.name) }}
+    </h2>
     <button class="item__delete" @click="promptDelete">
       <span class="material-icons">delete</span>
     </button>
@@ -28,21 +30,43 @@ export default {
       const plants = this.$store.state.currGroup.plants.filter(
         (item) => item.id !== this.item.id
       )
+
       const plantPath = `plants/${this.item.id}`
 
+      await fire.firestore().doc(plantPath).delete()
       await fire
         .firestore()
         .collection('groups')
         .doc(this.$store.state.currGroup.id)
         .set({ plants }, { merge: true })
-      await fire.firestore().doc(plantPath).delete()
+
+      this.$store.commit('update', [
+        'currGroup',
+        { ...this.$store.state.currGroup, plants },
+      ])
     },
     async deleteGroup() {
-      this.item.plants.forEach((doc) => doc.delete())
+      for (let i = 0; i < this.item.plants.length; i++) {
+        const plant = this.item.plants[i]
+        await plant.delete()
+      }
 
       const groupPath = `groups/${this.item.id}`
+      const yearPath = `years/${fire.auth().currentUser.uid}`
+
+      const groups = this.$store.state.years[this.$store.state.currYear].filter(
+        (item) => item.id !== this.item.id
+      )
 
       await fire.firestore().doc(groupPath).delete()
+      await fire
+        .firestore()
+        .doc(yearPath)
+        .set({ [this.$store.state.currYear]: groups }, { merge: true })
+      this.$store.commit('update', [
+        'years',
+        { ...this.$store.state.years, [this.$store.state.currYear]: groups },
+      ])
     },
     async promptDelete() {
       const { remove } = await this.$store.dispatch(

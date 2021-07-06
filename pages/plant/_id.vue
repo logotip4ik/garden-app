@@ -49,6 +49,16 @@
 import { fire } from '~/hooks/useFirebase'
 
 export default {
+  async asyncData({ params, store }) {
+    const plantPath = `plants/${params.id}`
+    const plantSnapshot = await fire.firestore().doc(plantPath).get()
+
+    const plant = {}
+
+    Object.assign(plant, { id: plantSnapshot.id, ...plantSnapshot.data() })
+
+    store.commit('update', ['currPlant', plant])
+  },
   data: () => ({
     hasChanges: false,
   }),
@@ -84,7 +94,6 @@ export default {
       this.hasChanges = false
 
       this.$store.commit('update', ['currPlant', newPlant])
-      // if (type === 'notes') this.$nuxt.refresh()
     },
   },
 }

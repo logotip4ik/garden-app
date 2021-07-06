@@ -98,7 +98,16 @@ export const actions = {
       slug: transliterate(state.name.trim()).toLowerCase(),
       plants: [],
     }
-    await fire.firestore().collection('groups').add(group)
+    const uid = fire.auth().currentUser.uid
+    const groupRef = await fire.firestore().collection('groups').add(group)
+    await fire
+      .firestore()
+      .doc(`years/${uid}`)
+      .set(
+        { [state.currYear]: [...state.years[state.currYear], groupRef] },
+        { merge: true }
+      )
+    state.years[state.currYear].unshift(groupRef)
   },
   async createPlant({ state }) {
     const plant = {
@@ -115,15 +124,13 @@ export const actions = {
           notes: '',
         })
     )
-    const createdPlant = await fire.firestore().collection('plants').add(plant)
+    const plantRef = await fire.firestore().collection('plants').add(plant)
     await fire
       .firestore()
       .collection('groups')
       .doc(state.currGroup.id)
-      .set(
-        { plants: [...state.currGroup.plants, createdPlant] },
-        { merge: true }
-      )
+      .set({ plants: [...state.currGroup.plants, plantRef] }, { merge: true })
+    state.currGroup.plants.unshift(plantRef)
   },
   async saveForm({ state, dispatch }, type) {
     if (!state.name) return

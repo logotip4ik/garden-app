@@ -1,5 +1,5 @@
 <template>
-  <form class="form" @submit.prevent="save" @reset.prevent="resetForm">
+  <form class="form" @submit.prevent="save" @reset.prevent="reset">
     <div class="form__item">
       <label>{{
         type === 'groups' ? 'Веддіть назву Групи:' : 'Веддіть назву Рослини:'
@@ -30,9 +30,6 @@
 import { mapActions } from 'vuex'
 
 export default {
-  asyncData({ params }) {
-    return { type: params.type }
-  },
   computed: {
     plantType: {
       get() {
@@ -50,6 +47,9 @@ export default {
         return this.$store.commit('update', ['name', val])
       },
     },
+    type() {
+      return this.$route.params.type
+    },
   },
   mounted() {
     this.$refs.input1.focus()
@@ -59,6 +59,10 @@ export default {
     save() {
       this.saveForm(this.type)
       this.$nuxt.$loading.start()
+    },
+    reset() {
+      this.resetForm()
+      this.$router.go(-1)
     },
   },
 }

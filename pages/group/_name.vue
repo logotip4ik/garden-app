@@ -34,8 +34,8 @@ export default {
     routeTo(plant) {
       this.$store.commit('update', ['currPlant', plant])
       this.$router.push({
-        name: 'plant-name',
-        params: { name: plant.slug },
+        name: 'plant-id',
+        params: { id: plant.id },
       })
     },
   },

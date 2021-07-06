@@ -11,7 +11,7 @@
       <h1 v-else-if="$route.name === 'group-name'" class="nav__header">
         {{ decodeURI(currGroup.name) }}
       </h1>
-      <h1 v-else-if="$route.name === 'plant-name'" class="nav__header">
+      <h1 v-else-if="$route.name === 'plant-id'" class="nav__header">
         {{ decodeURI(plantName) }}
       </h1>
     </transition>

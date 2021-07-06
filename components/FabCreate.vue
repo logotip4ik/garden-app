@@ -12,7 +12,7 @@
           $router.push({
             name: 'create-type',
             params: {
-              type: $route.name === 'group' ? 'groups' : 'plants',
+              type: $route.name === 'year-number' ? 'groups' : 'plants',
             },
           })
       "
