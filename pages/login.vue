@@ -51,6 +51,9 @@ export default {
     code: '',
     sentSms: false,
   }),
+  head: {
+    title: 'Увійдіть в акаунт',
+  },
   mounted() {
     fire.auth().useDeviceLanguage()
     this.tryReAuth()

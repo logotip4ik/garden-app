@@ -39,6 +39,9 @@ export default {
 
     return { yearsKeys: Object.keys(years).sort(Number) }
   },
+  head: {
+    title: 'Садок',
+  },
   methods: {
     routeTo(yearKey) {
       this.$store.commit('update', ['currYear', yearKey])

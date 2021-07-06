@@ -62,6 +62,13 @@ export default {
   data: () => ({
     hasChanges: false,
   }),
+  head() {
+    return {
+      title: `${decodeURI(this.$store.state.currPlant.name)} | ${
+        this.$store.state.currYear
+      }`,
+    }
+  },
   computed: {
     plant() {
       return this.$store.state.currPlant

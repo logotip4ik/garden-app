@@ -30,6 +30,13 @@ export default {
 
     return { plants }
   },
+  head() {
+    return {
+      title: `${decodeURI(this.$store.state.currGroup.name)} | ${
+        this.$store.state.currYear
+      }`,
+    }
+  },
   methods: {
     routeTo(plant) {
       this.$store.commit('update', ['currPlant', plant])

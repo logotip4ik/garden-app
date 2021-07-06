@@ -30,6 +30,25 @@ export default {
 
     return { groups }
   },
+  head() {
+    return {
+      title: `Садок | ${this.$store.state.currYear}`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            this.groups.length !== 0
+              ? `Дізнайтеся всі відомості про рослини у ${
+                  this.groups.length === 1 ? 'групі' : 'групах'
+                }: ${this.groups
+                  .reduce((list, group) => [...list, decodeURI(group.name)], [])
+                  .join(', ')}`
+              : `Створіть нову групу у ${this.$store.state.currYear}`,
+        },
+      ],
+    }
+  },
   methods: {
     routeTo(group) {
       if (this.$store.state.currGroup.id !== group.id)
