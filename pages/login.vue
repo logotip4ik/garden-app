@@ -6,24 +6,29 @@
         >о</span
       >к
     </h1>
-    <transition name="fade" mode="out-in">
-      <VuePhoneNumberInput
-        v-if="!sentSms"
-        v-model="number"
-        class="container__number-input"
-        @update="setNumber"
-      />
-      <CodeInput
-        v-else
-        type="6"
-        :fields="6"
-        :field-width="35"
-        :field-height="35"
-        :auto-focus="true"
-        class="container__code-input"
-        @change="code = $event"
-      />
-    </transition>
+    <client-only>
+      <transition name="fade" mode="out-in">
+        <VuePhoneNumberInput
+          v-if="!sentSms"
+          v-model="number"
+          class="container__number-input"
+          @update="setNumber"
+          @keypress.enter="sendSms"
+        />
+        <CodeInput
+          v-else
+          ref="codeInput"
+          type="6"
+          :fields="6"
+          :field-width="35"
+          :field-height="35"
+          :auto-focus="true"
+          class="container__code-input"
+          @change="code = $event"
+          @complete="signInWithPhoneNumber"
+        />
+      </transition>
+    </client-only>
     <button
       id="sign-in-button"
       ref="signIn"
@@ -36,14 +41,9 @@
 </template>
 
 <script>
-import CodeInput from 'vue-verification-code-input'
-
 import { fire } from '~/hooks/useFirebase'
 
 export default {
-  components: {
-    CodeInput,
-  },
   layout: 'login',
   data: () => ({
     number: '',
@@ -54,6 +54,11 @@ export default {
   head: {
     title: 'Увійдіть в акаунт',
   },
+  watch: {
+    sentSms() {
+      setTimeout(this.fixCodeInput, 500)
+    },
+  },
   mounted() {
     fire.auth().useDeviceLanguage()
     this.tryReAuth()
@@ -63,6 +68,14 @@ export default {
     )
   },
   methods: {
+    fixCodeInput() {
+      const inputs = this.$refs.codeInput.$el.children[0].children
+      for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i]
+        input.setAttribute('type', 'tel')
+      }
+      inputs[0].focus()
+    },
     tryReAuth() {
       fire.auth().onAuthStateChanged((user) => {
         if (!user) return

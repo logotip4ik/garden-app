@@ -49,13 +49,14 @@ export default {
     '~/plugins/transliterate.js',
     '~/plugins/snackbar.js',
     '~/plugins/vue-phone-number.client.js',
+    '~/plugins/vue-code-input.client.js',
   ],
   server: {
     host: '0.0.0.0',
   },
   router: {
     middleware: ['auth'],
-    base: '/garden-app/',
+    // base: '/garden-app/',
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
