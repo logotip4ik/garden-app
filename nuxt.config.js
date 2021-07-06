@@ -51,6 +51,7 @@ export default {
   },
   router: {
     middleware: ['auth'],
+    base: '/garden-app/',
   },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
