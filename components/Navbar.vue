@@ -9,10 +9,10 @@
         {{ currYear }}
       </h1>
       <h1 v-else-if="$route.name === 'group-name'" class="nav__header">
-        {{ decodeURI(currGroup.name) }}
+        {{ decodeURI(currGroup.name) }} | {{ currYear }}
       </h1>
       <h1 v-else-if="$route.name === 'plant-id'" class="nav__header">
-        {{ decodeURI(plantName) }}
+        {{ decodeURI(plantName) }} | {{ currYear }}
       </h1>
     </transition>
     <div>
