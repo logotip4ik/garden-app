@@ -1,4 +1,5 @@
 import { transliterate } from 'transliteration'
+import columnNames from './columnNames'
 import { fire } from '~/hooks/useFirebase'
 
 export const state = () => ({
@@ -9,28 +10,9 @@ export const state = () => ({
   currPlant: {},
   currGroup: {},
   name: '',
-  plantType: 'derevo',
+  plantType: 'yablyniGrushi',
   authenticated: false,
-  derevoColumnNames: [
-    'Мишече вушко',
-    'Формування суцвіть',
-    'Рожевий бутон',
-    'Цвітіння',
-    'Кінець цвітіння',
-    'Ліщина',
-    'Волоський горіх',
-    'Формування і дозрівання плодів',
-  ],
-  vinogradColumnNames: [
-    'Мишече вушко',
-    'Формування суцвіть',
-    'Рожевий бутон',
-    'Цвітіння',
-    'Кінець цвітіння',
-    'Ліщина',
-    'Волоський горіх',
-    'Формування і дозрівання плодів',
-  ],
+  ...columnNames,
 })
 
 export const mutations = {

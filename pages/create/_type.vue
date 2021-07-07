@@ -15,8 +15,14 @@
     <div v-if="type === 'plants'" class="form__item">
       <label>Веддіть тип Рослини:</label>
       <select ref="inputPlantType" v-model="plantType" required>
-        <option value="derevo" selected>Дерево, Кущ...</option>
+        <option value="yablyniGrushi" selected>Яблуні та Груші</option>
+        <option value="slivi">Сливи</option>
+        <option value="chereshniVishni">Черешні та Вишні</option>
+        <option value="abrkosPersik">Абрикос та Персик</option>
+        <option value="smorodina">Смородина</option>
+        <option value="malina">Малина</option>
         <option value="vinograd">Виноград</option>
+        <option value="suniza">Суниця</option>
       </select>
     </div>
     <div class="form__action">
