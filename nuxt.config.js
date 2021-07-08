@@ -34,8 +34,8 @@ export default {
     ],
   },
   loading: {
-    color: 'var(--secondary-color-light)',
-    height: '2px',
+    color: 'white',
+    height: '3px',
   },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [

@@ -18,12 +18,14 @@ html {
 }
 
 :root {
-  --primary-color: #870d4d;
+  /* --primary-color: #870d4d; */
+  --primary-color: #ff8000;
   --primary-color-light: #bb4679;
   --primary-color-dark: #550025;
   --secondary-color: #ef9a9a;
-  --secondary-color-light: #ffcccb;
-  --secondary-color-dark: #ba6b6c;
+  --secondary-color: #ff9933;
+  --secondary-color-light: #ffbf80;
+  --secondary-color-dark: #e67300;
 }
 
 .material-icons.md-18 {

@@ -43,11 +43,10 @@ export default {}
   height: $fab-size;
   cursor: pointer;
   transition: background-color 200ms ease-out, color 200ms ease-out;
-  // color: white;
+  color: white;
 
   &:hover {
     background-color: var(--secondary-color-dark);
-    color: white;
   }
 }
 </style>
