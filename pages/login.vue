@@ -12,8 +12,9 @@
           v-if="!sentSms"
           v-model="number"
           class="container__number-input"
+          :loader="loading"
           @update="setNumber"
-          @keypress.enter="sendSms"
+          @keypress.enter.native="sendSms"
         />
         <CodeInput
           v-else
@@ -23,20 +24,25 @@
           :field-width="35"
           :field-height="35"
           :auto-focus="true"
+          :loading="loading"
           class="container__code-input"
           @change="code = $event"
           @complete="signInWithPhoneNumber"
         />
       </transition>
     </client-only>
-    <button
-      id="sign-in-button"
-      ref="signIn"
-      class="container__button"
-      @click="sentSms ? signInWithPhoneNumber() : sendSms()"
-    >
-      {{ sentSms ? 'Sign In' : 'Send sms' }}
-    </button>
+    <transition>
+      <button
+        v-if="!sentSms"
+        id="sign-in-button"
+        ref="signIn"
+        class="container__button"
+        @click="sendSms"
+      >
+        Send sms
+      </button>
+      <span v-else>&nbsp;</span>
+    </transition>
   </div>
 </template>
 
@@ -50,6 +56,7 @@ export default {
     formattedNumber: '',
     code: '',
     sentSms: false,
+    loading: false,
   }),
   head: {
     title: 'Увійдіть в акаунт',
@@ -69,6 +76,7 @@ export default {
   },
   methods: {
     fixCodeInput() {
+      if (!this.$refs.codeInput) return
       const inputs = this.$refs.codeInput.$el.children[0].children
       for (let i = 0; i < inputs.length; i++) {
         const input = inputs[i]
@@ -85,20 +93,28 @@ export default {
     },
     signInWithPhoneNumber() {
       if (!this.code) return
+      this.loading = true
       window.confirmationResult
         .confirm(this.code)
         .then((result) => {
           const { user } = result
+          this.loading = false
           if (!user) return
           this.$store.commit('update', ['authenticated', true])
           this.$router.push({ name: 'index' })
         })
         .catch((error) => {
           console.warn(error)
+          this.loading = false
+          this.formattedNumber = ''
+          this.number = ''
+          this.sentSms = false
+          this.code = ''
         })
     },
     sendSms() {
       if (!this.formattedNumber) return
+      this.loading = true
       const phoneNumber = this.formattedNumber
       const appVerifier = window.recaptchaVerifier
 
@@ -106,10 +122,12 @@ export default {
         .auth()
         .signInWithPhoneNumber(phoneNumber, appVerifier)
         .then((confirmationResult) => {
+          this.loading = false
           this.sentSms = true
           window.confirmationResult = confirmationResult
         })
         .catch((error) => {
+          this.loading = false
           console.warn({ error })
         })
     },
