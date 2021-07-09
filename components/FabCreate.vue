@@ -30,6 +30,8 @@ export default {}
 .fab {
   $fab-size: 50px;
   position: fixed;
+  bottom: 5%;
+  right: 10%;
   bottom: clamp(1rem, 5%, 4rem);
   right: clamp(1rem, 10%, 4rem);
   // bottom: clamp(2rem, 1vh, 4rem);
