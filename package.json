@@ -20,6 +20,7 @@
     "nuxt": "^2.15.7",
     "transliteration": "^2.2.0",
     "uuid": "^8.3.2",
+    "v-calendar": "^2.3.0",
     "vue-chill-code-input": "^0.1.1",
     "vue-phone-number-input": "^1.1.10",
     "vue-tel-input": "^5.5.0",

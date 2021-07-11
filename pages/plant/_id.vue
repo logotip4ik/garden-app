@@ -4,18 +4,28 @@
       <li v-for="(name, idx) in columnNames" :key="idx" class="date-card">
         <h3 class="date-card__header">
           <span>{{ name }}</span>
-          <span class="input-wrapper">
-            <!-- <label v-if="!plant.dates[$transliterate(name).toLowerCase()].time">
-              Дата
-            </label> -->
-            <input
-              type="date"
+          <span>
+            <v-date-picker
               :value="plant.dates[$transliterate(name).toLowerCase()].time"
-              class="no-input"
+              :input-debounce="500"
+              mode="date"
               @input="
-                savePlant($transliterate(name).toLowerCase(), 'time', $event)
+                (ev) =>
+                  savePlant($transliterate(name).toLowerCase(), 'time', {
+                    target: { value: ev.toISOString().substr(0, 10) },
+                  })
               "
-          /></span>
+            >
+              <template #default="{ inputValue, inputEvents }">
+                <input
+                  class="no-input"
+                  placeholder="Дата"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                />
+              </template>
+            </v-date-picker>
+          </span>
         </h3>
         <details class="date-card__notes">
           <summary
@@ -140,28 +150,19 @@ export default {
       align-items: flex-start;
       margin-bottom: 1rem;
 
-      .input-wrapper {
-        position: relative;
-        label {
-          position: absolute;
-          top: 0;
-          right: 0;
-          pointer-events: none;
+      input {
+        all: inherit;
+        text-align: right;
+        border-bottom: 1px solid black;
+        max-width: 6rem;
+        &::-webkit-inner-spin-button {
+          appearance: none;
+          display: none;
         }
-        input {
-          all: inherit;
-          min-width: 5rem;
-          text-align: right;
-          border-bottom: 1px solid black;
-          &::-webkit-inner-spin-button {
-            appearance: none;
-            display: none;
-          }
 
-          &::-webkit-calendar-picker-indicator {
-            appearance: none;
-            display: none;
-          }
+        &::-webkit-calendar-picker-indicator {
+          appearance: none;
+          display: none;
         }
       }
     }

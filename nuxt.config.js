@@ -50,6 +50,7 @@ export default {
     '~/plugins/snackbar.js',
     '~/plugins/vue-phone-number.client.js',
     '~/plugins/vue-code-input.client.js',
+    '~/plugins/vue-datepicker.client.js',
   ],
   server: {
     host: '0.0.0.0',
