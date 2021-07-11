@@ -36,8 +36,14 @@ export default {
     }
 
     store.commit('update', ['years', years])
+    // ? Why this isn't working in chrome ?
+    // Object.keys(years).sort(Number)
 
-    return { yearsKeys: Object.keys(years).sort(Number) }
+    const yearsKeys = Object.keys(years).sort(
+      (year1, year2) => Number(year2) - Number(year1)
+    )
+
+    return { yearsKeys }
   },
   head: {
     title: 'Садок',

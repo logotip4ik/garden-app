@@ -136,9 +136,26 @@ export default {
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 1rem;
+
+      input {
+        all: inherit;
+        min-width: 5rem;
+        text-align: right;
+        border-bottom: 1px solid black;
+        &::-webkit-inner-spin-button {
+          appearance: none;
+          display: none;
+        }
+
+        &::-webkit-calendar-picker-indicator {
+          appearance: none;
+          display: none;
+        }
+      }
     }
     &__notes {
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
 
       div {
         text-align: right;
