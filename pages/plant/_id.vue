@@ -5,26 +5,28 @@
         <h3 class="date-card__header">
           <span>{{ name }}</span>
           <span>
-            <v-date-picker
-              :value="plant.dates[$transliterate(name).toLowerCase()].time"
-              :input-debounce="500"
-              mode="date"
-              @input="
-                (ev) =>
-                  savePlant($transliterate(name).toLowerCase(), 'time', {
-                    target: { value: ev.toISOString().substr(0, 10) },
-                  })
-              "
-            >
-              <template #default="{ inputValue, inputEvents }">
-                <input
-                  class="no-input"
-                  placeholder="Дата"
-                  :value="inputValue"
-                  v-on="inputEvents"
-                />
-              </template>
-            </v-date-picker>
+            <client-only>
+              <v-date-picker
+                :value="plant.dates[$transliterate(name).toLowerCase()].time"
+                :input-debounce="500"
+                mode="date"
+                @input="
+                  (value) =>
+                    savePlant($transliterate(name).toLowerCase(), 'time', {
+                      target: { value },
+                    })
+                "
+              >
+                <template #default="{ inputValue, inputEvents }">
+                  <input
+                    class="no-input"
+                    placeholder="Дата"
+                    :value="inputValue"
+                    v-on="inputEvents"
+                  />
+                </template>
+              </v-date-picker>
+            </client-only>
           </span>
         </h3>
         <details class="date-card__notes">
@@ -101,7 +103,13 @@ export default {
     async savePlant(name, type, { target }) {
       const plantDates = {
         dates: {
-          [name]: { ...this.plant.dates[name], [type]: target.value },
+          [name]: {
+            ...this.plant.dates[name],
+            [type]:
+              typeof target.value === 'object'
+                ? target.value.toISOString()
+                : target.value.trim(),
+          },
         },
       }
       const plantPath = `plants/${this.plant.id}`
