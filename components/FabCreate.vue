@@ -3,7 +3,7 @@
     <button
       v-if="
         $route.name !== 'create-type' &&
-        $route.name !== 'plant-name' &&
+        $route.name !== 'plant-id' &&
         $route.name !== 'index'
       "
       class="fab"
