@@ -4,7 +4,10 @@
       <li v-for="(name, idx) in columnNames" :key="idx" class="date-card">
         <h3 class="date-card__header">
           <span>{{ name }}</span>
-          <span>
+          <span class="input-wrapper">
+            <!-- <label v-if="!plant.dates[$transliterate(name).toLowerCase()].time">
+              Дата
+            </label> -->
             <input
               type="date"
               :value="plant.dates[$transliterate(name).toLowerCase()].time"
@@ -137,19 +140,28 @@ export default {
       align-items: flex-start;
       margin-bottom: 1rem;
 
-      input {
-        all: inherit;
-        min-width: 5rem;
-        text-align: right;
-        border-bottom: 1px solid black;
-        &::-webkit-inner-spin-button {
-          appearance: none;
-          display: none;
+      .input-wrapper {
+        position: relative;
+        label {
+          position: absolute;
+          top: 0;
+          right: 0;
+          pointer-events: none;
         }
+        input {
+          all: inherit;
+          min-width: 5rem;
+          text-align: right;
+          border-bottom: 1px solid black;
+          &::-webkit-inner-spin-button {
+            appearance: none;
+            display: none;
+          }
 
-        &::-webkit-calendar-picker-indicator {
-          appearance: none;
-          display: none;
+          &::-webkit-calendar-picker-indicator {
+            appearance: none;
+            display: none;
+          }
         }
       }
     }
