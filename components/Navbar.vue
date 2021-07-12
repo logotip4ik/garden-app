@@ -1,19 +1,35 @@
 <template>
   <nav class="nav">
     <transition name="fade">
-      <h1 v-if="$route.name === 'index'" class="nav__header">Садок</h1>
-      <h1 v-else-if="$route.name === 'create-type'" class="nav__header">
+      <h3 v-if="$route.name === 'index'" class="nav__header">Садок</h3>
+      <h3 v-else-if="$route.name === 'create-type'" class="nav__header">
         Створити {{ $route.params.type === 'groups' ? 'Групу' : 'Рослину' }}
-      </h1>
-      <h1 v-else-if="$route.name === 'year-number'" class="nav__header">
+      </h3>
+      <!-- <h1 v-else-if="$route.name === 'year-number'" class="nav__header">
         {{ currYear }}
-      </h1>
-      <h1 v-else-if="$route.name === 'group-name'" class="nav__header">
-        {{ decodeURI(currGroup.name) }} | {{ currYear }}
-      </h1>
-      <h1 v-else-if="$route.name === 'plant-id'" class="nav__header">
-        {{ decodeURI(plantName) }} | {{ currYear }}
-      </h1>
+      </h1> -->
+      <h3
+        v-else-if="$route.name !== 'index' || $route.name === 'create-type'"
+        class="nav__header"
+      >
+        <NuxtLink to="/"
+          ><span class="material-icons md-24 home">home</span></NuxtLink
+        >
+        <NuxtLink :to="`/year/${currYear}`">/ {{ currYear }}</NuxtLink>
+        <NuxtLink
+          v-if="$route.name === 'group-name' || $route.name === 'plant-id'"
+          :to="`/group/${currGroup.slug}`"
+          >/ {{ decodeURI(currGroup.name) }}</NuxtLink
+        >
+        <NuxtLink v-if="$route.name === 'plant-id'" :to="`/plant/${plant.id}`">
+          / {{ decodeURI(plant.name) }}
+        </NuxtLink>
+        <!-- {{
+          $route.name === 'group-name'
+            ? decodeURI(currGroup.name)
+            : decodeURI(plantName)
+        }} -->
+      </h3>
     </transition>
     <div>
       <transition name="fade" mode="out-in">
@@ -43,8 +59,8 @@ export default {
     currYear() {
       return this.$store.state.currYear
     },
-    plantName() {
-      return decodeURI(this.$store.state.currPlant.name)
+    plant() {
+      return this.$store.state.currPlant
     },
   },
   methods: {
@@ -70,6 +86,20 @@ export default {
   align-items: center;
   box-shadow: 0 0 2px 0 rgba($color: #000000, $alpha: 0.25),
     0 0 10px 0 rgba($color: #000000, $alpha: 0.1);
+
+  a {
+    text-decoration: none;
+    color: currentColor;
+    transition: color 150ms ease;
+
+    &:hover {
+      color: darken($color: #ffffff, $amount: 15);
+    }
+  }
+
+  .home {
+    transform: translateY(4.5px);
+  }
 
   div {
     display: flex;
