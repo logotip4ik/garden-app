@@ -3,7 +3,7 @@
     <button
       v-if="
         $route.name !== 'create-type' &&
-        $route.name !== 'plant-id' &&
+        $route.name !== 'year-group-id' &&
         $route.name !== 'index'
       "
       class="fab"
@@ -12,7 +12,10 @@
           $router.push({
             name: 'create-type',
             params: {
-              type: $route.name === 'year-number' ? 'groups' : 'plants',
+              type: $route.name === 'year' ? 'groups' : 'plants',
+            },
+            query: {
+              year: $route.params.year,
             },
           })
       "

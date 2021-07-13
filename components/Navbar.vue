@@ -5,30 +5,25 @@
       <h3 v-else-if="$route.name === 'create-type'" class="nav__header">
         Створити {{ $route.params.type === 'groups' ? 'Групу' : 'Рослину' }}
       </h3>
-      <!-- <h1 v-else-if="$route.name === 'year-number'" class="nav__header">
-        {{ currYear }}
-      </h1> -->
       <h3
-        v-else-if="$route.name !== 'index' || $route.name === 'create-type'"
+        v-else-if="$route.name !== 'index' || $route.name !== 'create-type'"
         class="nav__header"
       >
         <NuxtLink to="/"
           ><span class="material-icons md-24 home">home</span></NuxtLink
         >
-        <NuxtLink :to="`/year/${currYear}`">/ {{ currYear }}</NuxtLink>
-        <NuxtLink
-          v-if="$route.name === 'group-name' || $route.name === 'plant-id'"
-          :to="`/group/${currGroup.slug}`"
+        <NuxtLink :to="`/${$route.params.year}`">
+          / {{ $route.params.year }}</NuxtLink
+        ><NuxtLink
+          v-if="$route.name === 'year-group' || $route.name === 'year-group-id'"
+          :to="`/${$route.params.year}/${currGroup.slug}`"
           >/ {{ decodeURI(currGroup.name) }}</NuxtLink
+        ><NuxtLink
+          v-if="$route.name === 'year-group-id'"
+          :to="`/${$route.params.year}/${currGroup.slug}/${plant.id}`"
         >
-        <NuxtLink v-if="$route.name === 'plant-id'" :to="`/plant/${plant.id}`">
           / {{ decodeURI(plant.name) }}
         </NuxtLink>
-        <!-- {{
-          $route.name === 'group-name'
-            ? decodeURI(currGroup.name)
-            : decodeURI(plantName)
-        }} -->
       </h3>
     </transition>
     <div>
@@ -55,9 +50,6 @@ export default {
   computed: {
     currGroup() {
       return this.$store.state.currGroup
-    },
-    currYear() {
-      return this.$store.state.currYear
     },
     plant() {
       return this.$store.state.currPlant

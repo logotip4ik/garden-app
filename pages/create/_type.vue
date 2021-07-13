@@ -63,7 +63,7 @@ export default {
   methods: {
     ...mapActions(['saveForm', 'resetForm']),
     save() {
-      this.saveForm(this.type)
+      this.saveForm({ type: this.type, year: this.$route.query.year })
       this.$nuxt.$loading.start()
     },
     reset() {

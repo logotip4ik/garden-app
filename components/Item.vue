@@ -54,7 +54,7 @@ export default {
       const groupPath = `groups/${this.item.id}`
       const yearPath = `years/${fire.auth().currentUser.uid}`
 
-      const groups = this.$store.state.years[this.$store.state.currYear].filter(
+      const groups = this.$store.state.years[this.$route.params.year].filter(
         (item) => item.id !== this.item.id
       )
 
@@ -62,10 +62,10 @@ export default {
       await fire
         .firestore()
         .doc(yearPath)
-        .set({ [this.$store.state.currYear]: groups }, { merge: true })
+        .set({ [this.$route.params.year]: groups }, { merge: true })
       this.$store.commit('update', [
         'years',
-        { ...this.$store.state.years, [this.$store.state.currYear]: groups },
+        { ...this.$store.state.years, [this.$route.params.year]: groups },
       ])
     },
     async promptDelete() {
