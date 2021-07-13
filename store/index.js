@@ -1,7 +1,6 @@
 import { transliterate } from 'transliteration'
 import columnNames from './columnNames'
 import { fire } from '~/hooks/useFirebase'
-import { getUserFromCookie } from '~/helpers'
 
 export const state = () => ({
   db: {},
@@ -135,12 +134,6 @@ export const actions = {
   },
   resetForm({ state }) {
     state.name = ''
-  },
-  nuxtServerInit({ state }, { req }) {
-    const user = getUserFromCookie(req)
-    if (!user) return
-    state.authenticated = false
-    state.user = user
   },
 }
 

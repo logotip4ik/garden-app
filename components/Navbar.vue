@@ -67,11 +67,11 @@ export default {
   },
   methods: {
     async logout() {
-      await fire.auth().signOut()
       Cookies.remove('access_token')
       this.$store.commit('update', ['authenticated', false])
       this.$store.commit('update', ['currUser', {}])
       this.$router.push({ name: 'login' })
+      await fire.auth().signOut()
     },
   },
 }

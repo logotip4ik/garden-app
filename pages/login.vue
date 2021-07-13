@@ -47,8 +47,6 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
-
 import { fire } from '~/hooks/useFirebase'
 
 export default {
@@ -87,12 +85,10 @@ export default {
       inputs[0].focus()
     },
     tryReAuth() {
-      fire.auth().onAuthStateChanged(async (user) => {
+      fire.auth().onAuthStateChanged((user) => {
         if (!user) return
         this.$store.commit('update', ['authenticated', true])
         this.$router.push({ name: 'index' })
-        const token = await user.getIdToken(true)
-        Cookies.set('access_token', token)
       })
     },
     signInWithPhoneNumber() {
@@ -100,14 +96,12 @@ export default {
       this.loading = true
       window.confirmationResult
         .confirm(this.code)
-        .then(async (result) => {
+        .then((result) => {
           const { user } = result
           this.loading = false
           if (!user) return
           this.$store.commit('update', ['authenticated', true])
           this.$router.push({ name: 'index' })
-          const token = await user.getIdToken(true)
-          Cookies.set('access_token', token)
         })
         .catch((error) => {
           console.warn(error)

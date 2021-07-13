@@ -75,9 +75,9 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     // TODO: uncomment for prod
-    // '@nuxtjs/pwa',
+    '@nuxtjs/pwa',
+    // '@nuxtjs/firebase',
     // [
-    //   '@nuxtjs/firebase',
     //   {
     //     config: {
     //       apiKey: 'AIzaSyB54xV2o0-3HfWpKDlXdWV-Sk-EQYRsfcE',
@@ -113,13 +113,15 @@ export default {
   //     appId: '1:317442427051:web:8e143467826844d0e8cfee',
   //   },
   //   services: {
-  //     auth: true,
-  //     // auth: {
-  //     //   persistence: 'local', // default
-  //     //   initialize: {
-  //     //     onAuthStateChangedAction: 'onAuthStateChangedAction',
-  //     //   },
-  //     // },
+  //     auth: {
+  //       ssr: true,
+  //     },
+  //     //     // auth: {
+  //     //     //   persistence: 'local', // default
+  //     //     //   initialize: {
+  //     //     //     onAuthStateChangedAction: 'onAuthStateChangedAction',
+  //     //     //   },
+  //     //     // },
   //   },
   // },
 }
