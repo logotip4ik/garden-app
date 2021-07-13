@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
+
 import { fire } from '~/hooks/useFirebase'
 
 export default {
@@ -66,6 +68,7 @@ export default {
   methods: {
     async logout() {
       await fire.auth().signOut()
+      Cookies.remove('access_token')
       this.$store.commit('update', ['authenticated', false])
       this.$store.commit('update', ['currUser', {}])
       this.$router.push({ name: 'login' })
