@@ -12,8 +12,8 @@
         :placeholder="type === 'groups' ? 'Яблуні...' : 'Юпітер'"
       />
     </div>
-    <div v-if="type === 'plants'" class="form__item">
-      <label>Веддіть тип Рослини:</label>
+    <div v-if="type === 'groups'" class="form__item">
+      <label>Веддіть тип Рослин:</label>
       <select ref="inputPlantType" v-model="plantType" required>
         <option value="yablyniGrushi" selected>Яблуні та Груші</option>
         <option value="slivi">Сливи</option>

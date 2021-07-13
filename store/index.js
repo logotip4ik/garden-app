@@ -79,6 +79,7 @@ export const actions = {
       belongs: fire.auth().currentUser.uid,
       name: encodeURI(state.name.trim()),
       slug: transliterate(state.name.trim()).toLowerCase(),
+      type: state.plantType,
       plants: [],
     }
     const uid = fire.auth().currentUser.uid
@@ -98,9 +99,9 @@ export const actions = {
       slug: transliterate(state.name.trim()).toLowerCase(),
       dates: {},
       belongs: fire.auth().currentUser.uid,
-      type: state.plantType,
+      type: state.currGroup.type,
     }
-    state[`${state.plantType}ColumnNames`].forEach(
+    state[`${plant.type}ColumnNames`].forEach(
       (name) =>
         (plant.dates[transliterate(name).toLowerCase()] = {
           time: null,
