@@ -60,8 +60,11 @@ export const actions = {
     })
   },
   showSnack(_, [text, timeout = 5000]) {
-    const snackContainer = document.createElement('div')
-    snackContainer.classList.add('snackbar-container')
+    let snackContainer = document.querySelector('.snackbar-container')
+    if (!snackContainer) {
+      snackContainer = document.createElement('div')
+      snackContainer.classList.add('snackbar-container')
+    }
 
     const snack = document.createElement('div')
     snackContainer.appendChild(snack)
@@ -71,7 +74,7 @@ export const actions = {
     document.body.appendChild(snackContainer)
 
     setTimeout(() => snack.classList.remove('append'), timeout - 500)
-    setTimeout(() => snackContainer.remove(), timeout)
+    setTimeout(() => snack.remove(), timeout)
     setTimeout(() => snack.classList.add('append'), 10)
   },
   async createGroup({ state }, currYear) {
@@ -123,13 +126,11 @@ export const actions = {
     if (type === 'groups') await dispatch('createGroup', year)
     if (type === 'plants') await dispatch('createPlant')
 
-    state.name = ''
-
     dispatch('showSnack', [
-      `Створено нову ${
-        type === 'groups' ? 'групу' : type === 'plants' ? 'рослину' : 'дату'
-      }`,
+      `Створено нову ${type === 'groups' ? 'групу' : 'рослину'}: ${state.name}`,
     ])
+
+    state.name = ''
 
     if (window.history.length > 1) return this.$router.go(-1)
     return this.$router.push({ name: 'index' })
