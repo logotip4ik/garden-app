@@ -1,49 +1,64 @@
 <template>
   <nav class="nav">
-    <transition name="fade">
-      <h3 v-if="$route.name === 'index'" class="nav__header">Садок</h3>
-      <h3 v-else-if="$route.name === 'create-type'" class="nav__header">
+    <transition mode="out-in" @enter="enterAnim" @leave="leaveAnim">
+      <h3 v-if="$route.name === 'index'" key="1" class="nav__header">Садок</h3>
+      <h3 v-else-if="$route.name === 'create-type'" key="2" class="nav__header">
         Створити {{ $route.params.type === 'groups' ? 'Групу' : 'Рослину' }}
       </h3>
-      <h3
-        v-else-if="$route.name !== 'index' || $route.name !== 'create-type'"
-        class="nav__header"
-      >
-        <NuxtLink to="/"
-          ><span class="material-icons md-24 home">home</span></NuxtLink
-        >
-        <NuxtLink :to="`/${$route.params.year}`">
-          / {{ $route.params.year }}</NuxtLink
-        ><NuxtLink
-          v-if="$route.name === 'year-group' || $route.name === 'year-group-id'"
-          :to="`/${$route.params.year}/${currGroup.slug}`"
-          >/ {{ decodeURI(currGroup.name) }}</NuxtLink
-        ><NuxtLink
-          v-if="$route.name === 'year-group-id'"
-          :to="`/${$route.params.year}/${currGroup.slug}/${plant.id}`"
-        >
-          / {{ decodeURI(plant.name) }}
-        </NuxtLink>
+      <h3 v-else key="3" class="nav__header">
+        <transition-group :css="false" @enter="enterAnim" @leave="leaveAnim">
+          <NuxtLink key="1" to="/"
+            ><span class="material-icons md-24 home">home</span></NuxtLink
+          >
+          <NuxtLink key="2" :to="`/${$route.params.year}`">
+            / {{ $route.params.year }} </NuxtLink
+          ><NuxtLink
+            v-if="
+              $route.name === 'year-group' || $route.name === 'year-group-id'
+            "
+            key="3"
+            :to="`/${$route.params.year}/${currGroup.slug}`"
+            >/ {{ decodeURI(currGroup.name) }}</NuxtLink
+          ><NuxtLink
+            v-if="$route.name === 'year-group-id'"
+            key="4"
+            :to="`/${$route.params.year}/${currGroup.slug}/${plant.id}`"
+          >
+            / {{ decodeURI(plant.name) }}
+          </NuxtLink>
+        </transition-group>
       </h3>
     </transition>
-    <div>
-      <transition name="fade" mode="out-in">
-        <button
+
+    <button
+      class="nav__add-button"
+      @click="
+        () =>
+          $route.name === 'create-type' ? save($route.params.type) : logout()
+      "
+    >
+      <transition
+        :css="false"
+        mode="out-in"
+        @enter="enterAnim"
+        @leave="leaveAnim"
+      >
+        <span
           v-if="$route.name === 'create-type'"
-          class="nav__add-button"
-          @click="() => save($route.params.type)"
+          key="1"
+          class="material-icons md-24"
         >
-          <span class="material-icons md-24">save</span>
-        </button>
-        <button v-else class="nav__add-button" @click="logout">
-          <span class="material-icons md-24">logout</span>
-        </button>
+          save
+        </span>
+        <span v-else key="2" class="material-icons md-24">logout</span>
       </transition>
-    </div>
+    </button>
   </nav>
 </template>
 
 <script>
+import gsap from 'gsap'
+
 import { fire } from '~/hooks/useFirebase'
 
 export default {
@@ -56,6 +71,16 @@ export default {
     },
   },
   methods: {
+    enterAnim(el, onComplete) {
+      gsap.fromTo(
+        el,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: 'power2.out', onComplete }
+      )
+    },
+    leaveAnim(el, onComplete) {
+      gsap.to(el, { opacity: 0, duration: 0.3, ease: 'power2.in', onComplete })
+    },
     async logout() {
       this.$store.commit('update', ['authenticated', false])
       this.$store.commit('update', ['currUser', {}])

@@ -33,9 +33,40 @@
 </template>
 
 <script>
+import gsap from 'gsap'
 import { mapActions } from 'vuex'
 
 export default {
+  transition: {
+    css: false,
+    enter(el, done) {
+      gsap.set(document.body, { overflowY: 'hidden' })
+      gsap.fromTo(
+        el,
+        { yPercent: 100 },
+        {
+          yPercent: 0,
+          ease: 'power3.out',
+          onComplete: () => {
+            gsap.set(document.body, { overflowY: 'auto' })
+            done.call()
+          },
+        }
+      )
+    },
+    leave(el, done) {
+      gsap.set(document.body, { overflowY: 'hidden' })
+      gsap.to(el, {
+        yPercent: 100,
+        ease: 'power3.in',
+        onComplete: () => {
+          gsap.set(document.body, { overflowY: 'auto' })
+          done.call()
+        },
+      })
+    },
+    afterLeave() {},
+  },
   computed: {
     plantType: {
       get() {
@@ -80,6 +111,8 @@ export default {
   max-width: 700px;
   margin: 0 auto;
   padding: 1.5rem 1rem 0;
+  min-height: calc(100vh - 65px);
+
   &__item {
     margin-bottom: 2rem;
     label {
