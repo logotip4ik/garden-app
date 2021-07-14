@@ -89,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    this.$refs.input1.focus()
+    setTimeout(() => this.$refs.input1.focus(), 510)
   },
   methods: {
     ...mapActions(['saveForm', 'resetForm']),
