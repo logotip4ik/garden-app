@@ -1,6 +1,11 @@
 <template>
   <div class="group">
-    <ul v-if="plants.length !== 0" class="group__plants">
+    <transition-group
+      v-if="plants.length !== 0"
+      name="item"
+      tag="ul"
+      class="group__plants"
+    >
       <Item
         v-for="plant in plants"
         :key="plant.id"
@@ -8,7 +13,7 @@
         :group="false"
         @click="routeTo(plant)"
       ></Item>
-    </ul>
+    </transition-group>
     <div v-else class="empty">
       У вас не має жодної рослини.<br />
       Натисніть &plus; що б створити нову рослину
@@ -68,5 +73,20 @@ export default {
     // margin: 0 auto;
     list-style-type: none;
   }
+}
+
+.item-enter-from,
+.item-leave-to {
+  opacity: 0;
+}
+.itme-enter-active,
+.item-leave-active {
+  transition: opacity 200ms ease;
+}
+.item-leave-active {
+  position: absolute;
+}
+.item-move {
+  transition: transform 0.4s ease;
 }
 </style>

@@ -55,6 +55,14 @@
   background-color: rgba(0, 0, 0, 0.1);
 }
 
+.dialog button:first-of-type {
+  background-color: #ca0025;
+  color: white;
+}
+.dialog button:first-of-type:hover {
+  background-color: #b00020;
+}
+
 .append {
   opacity: 1;
   transform: scale(1);

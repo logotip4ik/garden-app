@@ -4,7 +4,7 @@
       У вас не має жодної групи.<br />
       Натисніть &plus; що б створити нову групу рослин
     </div>
-    <ul v-else class="main__list">
+    <transition-group v-else name="item" tag="ul" class="main__list">
       <Item
         v-for="group in groups"
         :key="group.id"
@@ -12,7 +12,7 @@
         @click="routeTo(group)"
       >
       </Item>
-    </ul>
+    </transition-group>
   </div>
 </template>
 
@@ -62,4 +62,19 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.item-enter-from,
+.item-leave-to {
+  opacity: 0;
+}
+.itme-enter-active,
+.item-leave-active {
+  transition: opacity 200ms ease;
+}
+.item-leave-active {
+  position: absolute;
+}
+.item-move {
+  transition: transform 0.4s ease;
+}
+</style>
