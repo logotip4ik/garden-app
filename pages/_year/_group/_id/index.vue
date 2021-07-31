@@ -56,7 +56,7 @@
                 })
               "
             >
-              save
+              Зберегти
             </button>
           </div>
         </details>

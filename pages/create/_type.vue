@@ -20,7 +20,7 @@
         <option value="chereshniVishni">Черешні та Вишні</option>
         <option value="abrkosPersik">Абрикос та Персик</option>
         <option value="smorodina">Смородина</option>
-        <option value="malina">Малина</option>
+        <option value="malinaOzina">Малина та Ожина</option>
         <option value="vinograd">Виноград</option>
         <option value="suniza">Суниця</option>
       </select>
