@@ -7,7 +7,7 @@ export default {
   head: {
     title: 'Садок',
     htmlAttrs: {
-      lang: 'ua',
+      lang: 'uk',
     },
     meta: [
       { charset: 'utf-8' },
