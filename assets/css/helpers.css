@@ -43,6 +43,13 @@ html {
 .material-icons.md-dark {
   color: rgba(0, 0, 0, 1);
 }
+.nuxt-progress {
+  pointer-events: none;
+  /* background-color: var(--secondary-color-light);
+  box-shadow: 0 0 10px var(--secondary-color-light), 0 0 5px var(--secondary-color-light); */
+  background-color: #29d;
+  box-shadow: 0 0 10px #29d, 0 0 5px #29d;
+}
 
 .empty {
   position: fixed;

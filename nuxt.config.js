@@ -35,7 +35,7 @@ export default {
     ],
   },
   loading: {
-    color: 'white',
+    color: '#29d',
     height: '3px',
   },
   // Global CSS: https://go.nuxtjs.dev/config-css
