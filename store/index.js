@@ -56,6 +56,7 @@ export const actions = {
       setTimeout(() => {
         dialog.classList.add('append')
         dialogContainer.classList.add('append')
+        dialogDelete.focus()
       }, 10)
     })
   },
