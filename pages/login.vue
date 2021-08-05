@@ -179,7 +179,7 @@ export default {
     transition: background-color 200ms ease, color 200ms ease;
 
     &:hover {
-      background-color: var(--primary-color-light);
+      background-color: var(--secondary-color-dark);
       color: white;
     }
   }
