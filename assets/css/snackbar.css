@@ -1,11 +1,15 @@
 .snackbar-container {
   width: 100%;
   padding: 0.5rem;
-  max-width: 400px;
+  max-width: 500px;
   position: fixed;
   bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
 }
 
 .snackbar {
@@ -17,9 +21,10 @@
   color: white;
   font-size: 1rem;
   font-weight: 600;
-  transform: translateY(175%);
-  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(30vh);
+  transition: transform 400ms cubic-bezier(0.34, 1.36, 0.64, 1);
   text-align: left;
+  margin-bottom: 0.75rem;
 }
 
 .snackbar.append {

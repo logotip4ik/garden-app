@@ -60,8 +60,11 @@ export const actions = {
     })
   },
   showSnack(_, [text, timeout = 5000]) {
-    const snackContainer = document.createElement('div')
-    snackContainer.classList.add('snackbar-container')
+    let snackContainer = document.querySelector('.snackbar-container')
+    if (!snackContainer) {
+      snackContainer = document.createElement('div')
+      snackContainer.classList.add('snackbar-container')
+    }
 
     const snack = document.createElement('div')
     snackContainer.appendChild(snack)
@@ -71,10 +74,10 @@ export const actions = {
     document.body.appendChild(snackContainer)
 
     setTimeout(() => snack.classList.remove('append'), timeout - 500)
-    setTimeout(() => snackContainer.remove(), timeout)
+    setTimeout(() => snack.remove(), timeout)
     setTimeout(() => snack.classList.add('append'), 10)
   },
-  async createGroup({ state }) {
+  async createGroup({ state }, currYear) {
     const group = {
       belongs: fire.auth().currentUser.uid,
       name: encodeURI(state.name.trim()),
@@ -82,16 +85,17 @@ export const actions = {
       type: state.plantType,
       plants: [],
     }
-    const uid = fire.auth().currentUser.uid
+    const { uid } = fire.auth().currentUser
+
     const groupRef = await fire.firestore().collection('groups').add(group)
     await fire
       .firestore()
       .doc(`years/${uid}`)
       .set(
-        { [state.currYear]: [...state.years[state.currYear], groupRef] },
+        { [currYear]: [...state.years[currYear], groupRef] },
         { merge: true }
       )
-    state.years[state.currYear].unshift(groupRef)
+    state.years[currYear].unshift(groupRef)
   },
   async createPlant({ state }) {
     const plant = {
@@ -116,19 +120,17 @@ export const actions = {
       .set({ plants: [...state.currGroup.plants, plantRef] }, { merge: true })
     state.currGroup.plants.unshift(plantRef)
   },
-  async saveForm({ state, dispatch }, type) {
+  async saveForm({ state, dispatch }, { type, year }) {
     if (!state.name) return
 
-    if (type === 'groups') await dispatch('createGroup')
+    if (type === 'groups') await dispatch('createGroup', year)
     if (type === 'plants') await dispatch('createPlant')
 
-    state.name = ''
-
     dispatch('showSnack', [
-      `Створено нову ${
-        type === 'groups' ? 'групу' : type === 'plants' ? 'рослину' : 'дату'
-      }`,
+      `Створено нову ${type === 'groups' ? 'групу' : 'рослину'}: ${state.name}`,
     ])
+
+    state.name = ''
 
     if (window.history.length > 1) return this.$router.go(-1)
     return this.$router.push({ name: 'index' })

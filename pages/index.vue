@@ -50,10 +50,9 @@ export default {
   },
   methods: {
     routeTo(yearKey) {
-      this.$store.commit('update', ['currYear', yearKey])
       this.$router.push({
-        name: 'year-number',
-        params: { number: yearKey },
+        name: 'year',
+        params: { year: yearKey },
       })
     },
   },

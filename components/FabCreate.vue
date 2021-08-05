@@ -1,18 +1,17 @@
 <template>
-  <transition name="fade">
+  <transition :css="false" @enter="enterAnim" @leave="leaveAnim">
     <button
-      v-if="
-        $route.name !== 'create-type' &&
-        $route.name !== 'plant-id' &&
-        $route.name !== 'index'
-      "
+      v-if="$route.name === 'year' || $route.name === 'year-group'"
       class="fab"
       @click="
         () =>
           $router.push({
             name: 'create-type',
             params: {
-              type: $route.name === 'year-number' ? 'groups' : 'plants',
+              type: $route.name === 'year' ? 'groups' : 'plants',
+            },
+            query: {
+              year: $route.params.year,
             },
           })
       "
@@ -23,7 +22,22 @@
 </template>
 
 <script>
-export default {}
+import gsap from 'gsap'
+
+export default {
+  methods: {
+    enterAnim(el, onComplete) {
+      gsap.fromTo(
+        el,
+        { scale: 0 },
+        { ease: 'back.out', scale: 1, duration: 0.3, onComplete }
+      )
+    },
+    leaveAnim(el, onComplete) {
+      gsap.to(el, { ease: 'back.in', scale: 0, duration: 0.3, onComplete })
+    },
+  },
+}
 </script>
 
 <style lang="scss">

@@ -1,7 +1,12 @@
 <template>
   <div class="plant">
     <ul class="plant__dates">
-      <li v-for="(name, idx) in columnNames" :key="idx" class="date-card">
+      <li
+        v-for="(name, idx) in columnNames"
+        :key="idx"
+        class="date-card"
+        :data-idx="idx"
+      >
         <h3 class="date-card__header">
           <span>{{ name }}</span>
           <span>
@@ -51,7 +56,7 @@
                 })
               "
             >
-              save
+              Зберегти
             </button>
           </div>
         </details>
@@ -61,6 +66,7 @@
 </template>
 
 <script>
+// import gsap from 'gsap'
 import { fire } from '~/hooks/useFirebase'
 
 export default {
@@ -80,7 +86,7 @@ export default {
   head() {
     return {
       title: `${decodeURI(this.$store.state.currPlant.name)} | ${
-        this.$store.state.currYear
+        this.$route.params.year
       }`,
     }
   },
